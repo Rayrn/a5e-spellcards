@@ -1,0 +1,55 @@
+{% set navItems = [
+    {
+        name: 'Home',
+        url: '#',
+    },
+    {
+        name: 'Link',
+        url: '#'
+    },
+    {
+        name: 'Dropdown',
+        url: '#',
+        dropdown: [
+            {
+                name: 'Action',
+                url: '#'
+            },
+            {
+                name: 'Another action',
+                url: '#'
+            },
+            {
+                name: 'Something else here',
+                url: '#'
+            }
+        ]
+    },
+    {
+        name: 'Disabled',
+        url: '#',
+        disabled: true
+    }
+]
+%}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        {% for navItem in navItems %}
+            {% if navItem.dropdown is defined %}
+                <div class="dropdown">
+                    <a class="navbar-brand dropdown-toggle" href="{{ navItem.url }}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ navItem.name }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for dropdownItem in navItem.dropdown %}
+                            <li><a class="dropdown-item" href="{{ dropdownItem.url }}" disabled="{% if navItem.disabled is defined %} disabled {% endif %}">{{ dropdownItem.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <a class="navbar-brand" href="{{ navItem.url }}" disabled="{% if navItem.disabled is defined %} disabled {% endif %}">{{ navItem.name }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</nav>
