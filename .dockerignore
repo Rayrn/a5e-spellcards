@@ -1,0 +1,12 @@
+*
+
+!/app/.env
+!/app/assets/
+!/app/bin/
+!/app/composer.*
+!/app/config/
+!/app/public/
+!/app/src/
+!/app/symfony.lock
+!/app/templates/
+!/docker/
