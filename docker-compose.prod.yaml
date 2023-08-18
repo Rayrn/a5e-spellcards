@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
     app:
-        image: ${APP_NAME}-app-dev:local
+        image: ${APP_NAME}-app-prod:local
         build:
             args:
                 COMPOSER_AUTH: "${COMPOSER_AUTH}"
@@ -12,29 +12,23 @@ services:
                 LAST_COMMIT_DATE:
             context: .
             dockerfile: ./docker/Dockerfile
-            target: app_dev
-        environment:
-            APP_ENV: dev
+            target: app
         depends_on:
             - db
             - redis
         env_file:
             - ${ENV_FILE:-.env}
-        volumes:
-            - ./app:/var/www/html:rw,cached
     web:
         image: ${APP_NAME}-web:local
         build:
             args:
-                ASSETS_IMAGE: "${APP_NAME}-app-dev:local"
+                ASSETS_IMAGE: "${APP_NAME}-app-prod:local"
             context: .
             dockerfile: ./docker/nginx/Dockerfile
         ports:
             - ${APP_PORT}:80
         depends_on:
             - app
-        volumes:
-            - ./app/public:/var/www/html/public:ro,delegated
     cache:
         image: ${APP_NAME}-cache:local
         build:
@@ -43,8 +37,6 @@ services:
         ports:
             - ${APP_CACHE_PORT}:80
         depends_on:
-            - web
-        links:
             - web
     db:
         image: mongo:4.4

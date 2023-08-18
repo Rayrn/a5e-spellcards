@@ -21,8 +21,7 @@ class HomeController extends AbstractController
         return $this->render('partials/home.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
-                'title' => 'Home',
-                'description' => 'Home page',
+                'description' => 'A simple web app allowing a user to view spell cards for Advanced 5th Edition.'
             ]
         ));
     }

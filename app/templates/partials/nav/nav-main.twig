@@ -1,12 +1,11 @@
 {% set headerItems = [
-    { name: 'Home', url: '/' },
-    { name: 'Random Spell Card', url: '/random-spell-card' },
+    { name: 'Home', url: path('home') },
+    { name: 'Random Spell Card', url: path('spell--random') },
     { name: 'Spells By...', url: '#', dropdown: [
-        { name: 'Class ', url: '/spells/class' },
-        { name: 'School', url: '/spells/school' },
-        { name: 'Level', url: '/spells/level' }
-    ]},
-    { name: 'Login', url: '/login', disabled: true }
+        { name: 'Class ', url: path('spell--class') },
+        { name: 'School', url: path('spell--school') },
+        { name: 'Level', url: path('spell--level') }
+    ]}
 ] %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">

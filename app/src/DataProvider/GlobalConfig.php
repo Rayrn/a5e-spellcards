@@ -26,17 +26,17 @@ class GlobalConfig implements IteratorAggregate
 
     public function getGlobalParameters(): array
     {
-        if (empty($this->globalParameters)) {
-            $this->setGlobalParameters();
-        }
+        $this->setGlobalParameters();
 
         return $this->globalParameters;
     }
 
     public function setGlobalParameters(): void
     {
-        foreach (self::GLOBAL_PARAMETERS_MAP as $parameterName => $globalParameterName) {
-            $this->globalParameters[$globalParameterName] = $this->parameterBag->get($parameterName);
+        if (empty($this->globalParameters)) {
+            foreach (self::GLOBAL_PARAMETERS_MAP as $parameterName => $globalParameterName) {
+                $this->globalParameters[$globalParameterName] = $this->parameterBag->get($parameterName);
+            }
         }
     }
 }
