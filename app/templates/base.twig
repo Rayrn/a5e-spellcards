@@ -14,8 +14,19 @@
             {{- encore_entry_script_tags('app') -}}
         {%- endblock %}
     </head>
-    <body>
-        {% include 'nav/nav-main.twig' %}
-        {% block body %}{% endblock %}
+    <body class="bg-dark-subtle">
+        {% include 'partials/nav/nav-main.twig'%}
+
+        <div class="row text-center justify-content-center">
+            <div class="col-sm-10 col-xl-8 bg-light">
+                {% include 'partials/elements/title.twig' with { 'title': app_display_name } %}
+
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+        {% include 'partials/nav/nav-footer.twig' %}
+
+        {% block modals %}{% endblock %}
     </body>
 </html>

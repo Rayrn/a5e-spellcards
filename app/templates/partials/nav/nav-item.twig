@@ -12,7 +12,7 @@
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             {%- for dropdownItem in navItem.dropdown %}
-                {%- include 'nav/nav-item.twig' with { navItem: dropdownItem, dropdownItem: true } only -%}
+                {%- include 'partials/nav/nav-item.twig' with { navItem: dropdownItem, dropdownItem: true } only -%}
             {% endfor %}
 
         </ul>

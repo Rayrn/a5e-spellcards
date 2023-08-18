@@ -1,0 +1,9 @@
+{% set footerItems = [
+    { name: 'Github', url: 'https://github.com/Rayrn/a5e-spellcards/tree/main' },
+    { name: 'Written by Rayrn', url: 'https://github.com/Rayrn' },
+    { name: 'Code Copywrite ' ~ 'now'|date('Y'), url: '#', disabled: true }
+] %}
+
+<nav class="navbar navbar-expand-lg bg-light position-absolute bottom-0 start-0 end-0">
+    <div class="container">{% for navItem in footerItems %}{% include 'partials/nav/nav-item.twig' with { navItem: navItem } only %}{% endfor %}</div>
+</nav>

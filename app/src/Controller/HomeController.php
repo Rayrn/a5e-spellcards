@@ -18,7 +18,7 @@ class HomeController extends AbstractController
     {
         $context = $this->globalConfig->getGlobalParameters();
 
-        return $this->render('home/home.twig', array_merge(
+        return $this->render('partials/home.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
                 'title' => 'Home',
