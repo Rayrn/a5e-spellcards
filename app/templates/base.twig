@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
     <head>
         <meta charset="UTF-8">
         <title>{%- block title -%} {{ app_display_name }} | {{ app_version }}{%- endblock -%}</title>
@@ -14,19 +14,19 @@
             {{- encore_entry_script_tags('app') -}}
         {%- endblock %}
     </head>
-    <body class="bg-dark-subtle">
+    <body class="bg-dark-subtle d-flex flex-column h-100">
         {% include 'partials/nav/nav-main.twig'%}
 
         <div class="row text-center justify-content-center">
-            <div class="col-sm-10 col-xl-8 bg-light">
+            <div class="col-sm-10 col-xl-8 bg-light flexbox">
                 {% include 'partials/elements/title.twig' %}
 
                 {% block body %}{% endblock %}
             </div>
         </div>
 
-        {% include 'partials/nav/nav-footer.twig' %}
-
         {% block modals %}{% endblock %}
+
+        {% include 'partials/nav/nav-footer.twig' %}
     </body>
 </html>

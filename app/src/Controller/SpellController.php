@@ -4,89 +4,92 @@ namespace App\Controller;
 
 use App\DataProvider\GlobalConfig;
 use App\DataProvider\Spellbook;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Map\AdventureClass;
+use App\Entity\Map\ClassicalSchool;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class SpellController extends AbstractController
 {
     public function __construct(
         private GlobalConfig $globalConfig,
-        private Spellbook $spellbook
-    ) {}
+        private Spellbook $spellbook,
+        private RequestStack $requestStack,
+    )
+    {
+    }
 
-    #[Route('/spell/random', name: 'spell--random')]
-    public function spellRandom(): Response
+    #[Route('/spellbook', name: 'spell--book')]
+    #[cache(60)]
+    public function spellBook(): Response
     {
         $spellList = $this->spellbook->open();
-        $spell = $spellList->getSpell(rand(0, count($spellList->toArray()) - 1));
-
-        $context = $this->globalConfig->getGlobalParameters();
-
-        return $this->render('partials/spellDetail.twig', array_merge(
-            $this->globalConfig->getGlobalParameters(),
-            [
-                'title' => 'Random Spell',
-                'spell' => $spell
-            ]
-        ));
-    }
-
-    #[Route('/spell/class', name: 'spell--class')]
-    public function spellClass(): Response
-    {
-
-        $context = $this->globalConfig->getGlobalParameters();
+        $spellList->sort();
 
         return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
-                'title' => 'Spells by Class'
+                'title' => 'Spells by Class',
+                'spells' => $spellList,
             ]
         ));
     }
 
-    #[Route('/spell/level', name: 'spell--level')]
-    public function spellLevel(): Response
+    #[Route('/spellbook/{filter}', name: 'spell--filter', requirements: ['filter' => 'class|level|school'])]
+    #[cache(60)]
+    public function spellFilter(string $filter): Response
     {
-        $context = $this->globalConfig->getGlobalParameters();
+        $listOptions = match ($filter) {
+            'class' => AdventureClass::listOptions(),
+            'level' => range(0, 10),
+            'school' => ClassicalSchool::listOptions(),
+        };
+
+        return $this->render('partials/filterList.twig', array_merge(
+            $this->globalConfig->getGlobalParameters(),
+            [
+                'title' => 'Spells by ' . ucfirst($filter),
+                'optionKey' => $filter,
+                'optionList' => $listOptions,
+                'optionType' => $filter == 'level' ? 'numeric' : 'text',
+            ]
+        ));
+    }
+
+    #[Route('/spellbook/random', name: 'spell--random')]
+    #[cache(1)]
+    public function spellRandom(): Response
+    {
+        $spellList = $this->spellbook->open()->shuffleSpells(6);
+        $spellList->sort();
 
         return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
-                'title' => 'Spells by Level'
+                'title' => 'Pew Pew Pew!',
+                'spells' => $spellList,
             ]
         ));
     }
 
-    #[Route('/spell/school', name: 'spell--school')]
-    public function spellSchool(): Response
+    #[Route('/spellbook/{filter}/{value}', name: 'spell--search')]
+    #[cache(60)]
+    public function spellSearch(string $filter, mixed $value): Response
     {
-        $context = $this->globalConfig->getGlobalParameters();
+        $spellList = $this->spellbook->open()->filter($filter, $value);
+        $spellList->sort();
 
-        return $this->render('partials/spellList.twig', array_merge(
-            $this->globalConfig->getGlobalParameters(),
-            [
-                'title' => 'Spells by School'
-            ]
-        ));
-    }
-
-    #[Route('/spell/detail/{id}', name: 'spell--detail')]
-    public function spellDetail(int $id): Response
-    {
-        $context = $this->globalConfig->getGlobalParameters();
-
-        $spell = $this->spellbook->open()->getSpell($id - 1);
-
-        if (!$spell) {
-            throw $this->createNotFoundException('The spell does not exist');
+        if (empty($spellList->listSpells())) {
+            throw $this->createNotFoundException('No spells found!');
         }
 
-        return $this->render('partials/spellDetail.twig', array_merge(
+        return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
-                'spell' => $spell,
+                'title' => 'Spells by Class',
+                'spells' => $spellList,
             ]
         ));
     }

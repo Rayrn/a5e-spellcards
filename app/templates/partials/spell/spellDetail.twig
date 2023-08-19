@@ -1,0 +1,64 @@
+<div class="col-md-3 card text-center shadow m-4">
+    <div class="card-body">
+        <h3 class="card-title">
+            {% include 'partials/elements/anchor.twig' with {
+                'path': path('spell--search', {'filter': 'id', 'value': spell.id}),
+                'text': spell.name ~ (spell.concentration ? '<sup>(c)</sup>' : '') ~ (spell.ritual ? '<sup>(r)</sup>' : '')
+            } only %}
+        </h2>
+
+        <hr>
+
+        <p class="card-text"><em>
+            {%- include 'partials/elements/anchor.twig' with {
+                'path': path('spell--search', {'filter': 'level', 'value': spell.level}),
+                'text': spell.level|format_number(style='ordinal') ~ '-level'
+            } only -%}
+
+            ({% for tag in spell.tag -%}
+                {% apply spaceless %}
+                    {% include 'partials/elements/anchor.twig' with {
+                        'path': path('spell--search', {'filter': 'tag', 'value': tag}),
+                        'text': tag|title
+                    } only %}
+                {% endapply %}
+                {%- if not loop.last %}, {% endif -%}
+            {%- endfor -%})
+        </em></p>
+
+        <p class="card-text">
+            <strong>School:</strong>
+
+            {% for school in spell.school -%}
+                {% apply spaceless %}
+                    {% include 'partials/elements/anchor.twig' with {
+                        'path': path('spell--search', {'filter': 'school', 'value': school}),
+                        'text': school|title
+                    } only %}
+                {% endapply %}
+                {%- if not loop.last %}, {% endif -%}
+            {%- endfor -%}
+        </p>
+
+        <p class="card-text">
+            <strong>Classes:</strong>
+
+            {% for classMap in spell.classMap -%}
+                {% apply spaceless %}
+                    {% include 'partials/elements/anchor.twig' with {
+                        'path': path('spell--search', {'filter': 'class', 'value': classMap}),
+                        'text': classMap|title
+                    } only %}
+                {% endapply %}
+                {%- if not loop.last %}, {% endif -%}
+            {%- endfor -%}
+        </p>
+
+        {% if spell.rareSpellCount %}
+            <p class="card-text"><em>NB: {{spell.rareSpellCount|format_number(style='spellout')|title}} rare spell variant{{spell.rareSpellCount > 1 ? 's' : ''}} recorded</em></p>
+        {% endif %}
+    </div>
+    <div class "card-footer">
+        <footer class="blockquote-footer mt-3">{{ spell.publishing.source }}<br/>by {{ spell.publishing.publisherName }}</footer>
+    </div>
+</div>

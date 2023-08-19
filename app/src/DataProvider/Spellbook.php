@@ -40,7 +40,7 @@ class Spellbook implements IteratorAggregate
         'concentration' => 'Concentration',
         'ritual' => 'Ritual',
         'rareSpellCount' => 'Rare Spell Count',
-        'spellLevel' => 'Spell Level',
+        'level' => 'Spell Level',
         'school' => 'Classical School',
         'classMap' => self::DATA_MAP__ADVENTURE_CLASS,
     ];
@@ -120,7 +120,7 @@ class Spellbook implements IteratorAggregate
             $record[self::DATA_MAP['concentration']] == "1",
             $record[self::DATA_MAP['ritual']] == "1",
             (int) $record[self::DATA_MAP['rareSpellCount']],
-            (int) $record[self::DATA_MAP['spellLevel']],
+            (int) $record[self::DATA_MAP['level']],
             new ClassicalSchool($record[self::DATA_MAP['school']]),
             $adventureClass,
             new Tag(...array_keys($tags))

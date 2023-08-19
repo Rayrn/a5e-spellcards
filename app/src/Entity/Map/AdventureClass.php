@@ -33,4 +33,9 @@ class AdventureClass extends AbstractEntity
     {
         return (array) $this;
     }
+
+    public static function listOptions(): array
+    {
+        return array_keys(get_class_vars(self::class));
+    }
 }

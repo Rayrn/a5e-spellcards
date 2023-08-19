@@ -11,7 +11,7 @@ class Spell extends AbstractEntity
         public bool $concentration,
         public bool $ritual,
         public int $rareSpellCount,
-        public int $spellLevel,
+        public int $level,
         public Map\ClassicalSchool $school,
         public Map\AdventureClass $classMap,
         public Map\Tag $tag
@@ -28,10 +28,10 @@ class Spell extends AbstractEntity
             'concentration' => $this->concentration,
             'ritual' => $this->ritual,
             'rareSpellCount' => $this->rareSpellCount,
-            'spellLevel' => $this->spellLevel,
-            'school' => $this->school->toArray(),
-            'classMap' => $this->classMap->toArray(),
-            'tag' => $this->tag->toArray(),
+            'level' => $this->level,
+            'school' => $this->school->getActive(),
+            'classMap' => $this->classMap->getActive(),
+            'tag' => $this->tag->getActive(),
         ];
     }
 }
