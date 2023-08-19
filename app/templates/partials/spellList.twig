@@ -2,8 +2,14 @@
 
 {% block body %}
     <div class="row justify-content-center">
-        {% for spell in spells %}
+        {% for spell in spells.getPage(page|default(1), limit) %}
             {% include 'partials/spell/spellDetail.twig' %}
         {% endfor %}
     </div>
+
+    {% include 'partials/nav/nav-pagination.twig' with {
+        'page': page|default(1),
+        'limit': limit,
+        'total': spells.listSpells|length,
+    } only %}
 {% endblock %}

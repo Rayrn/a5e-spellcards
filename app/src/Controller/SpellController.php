@@ -7,7 +7,6 @@ use App\DataProvider\Spellbook;
 use App\Entity\Map\AdventureClass;
 use App\Entity\Map\ClassicalSchool;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,7 +15,6 @@ class SpellController extends AbstractController
     public function __construct(
         private GlobalConfig $globalConfig,
         private Spellbook $spellbook,
-        private RequestStack $requestStack,
     )
     {
     }
@@ -80,10 +78,6 @@ class SpellController extends AbstractController
     {
         $spellList = $this->spellbook->open()->filter($filter, $value);
         $spellList->sort();
-
-        if (empty($spellList->listSpells())) {
-            throw $this->createNotFoundException('No spells found!');
-        }
 
         return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),

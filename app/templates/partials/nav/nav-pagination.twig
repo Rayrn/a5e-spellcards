@@ -1,0 +1,50 @@
+{% set current = page %}
+{% set first = 1 %}
+{% set last = (total / limit)|round(0, 'ceil' ) %}
+
+{% set previousThree = page - 3 %}
+{% set previousTwo = page - 2 %}
+{% set previous = page - 1 %}
+{% set next = page + 1 %}
+{% set nextTwo = page + 2 %}
+{% set nextThree = page + 3 %}
+
+{% if last > 1 %}
+    <nav>
+        <ul class="pagination pagination-lg justify-content-center">
+            {% if current > 2 %}
+                <li class="page-item"><a class="page-link" href="?page={{ first }}">&laquo;</a></li>
+            {% endif %}
+
+            {% if current > 3 and next > last %}
+                <li class="page-item"><a class="page-link" href="?page={{ previousThree }}">{{ previousThree }}</a></li>
+            {% endif %}
+
+            {% if current > 2 and nextTwo > last %}
+                <li class="page-item"><a class="page-link" href="?page={{ previousTwo }}">{{ previousTwo }}</a></li>
+            {% endif %}
+
+            {% if current > 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ previous }}">{{ previous }}</a></li>
+            {% endif %}
+
+            <li class="page-item"><a class="page-link active">{{ current }}</a></li>
+
+            {% if next <= last %}
+                <li class="page-item"><a class="page-link" href="?page={{ next }}">{{ next }}</a></li>
+            {% endif %}
+
+            {% if nextTwo <= last and previousTwo < 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ nextTwo }}">{{ nextTwo }}</a></li>
+            {% endif %}
+
+            {% if nextThree < last and previous < 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ nextThree }}">{{ nextThree }}</a></li>
+            {% endif %}
+
+            {% if current < last - 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ last }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

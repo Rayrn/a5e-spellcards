@@ -2,7 +2,7 @@
     <div class="card-body">
         <h3 class="card-title">
             {% include 'partials/elements/anchor.twig' with {
-                'path': path('spell--search', {'filter': 'id', 'value': spell.id}),
+                'path': path('spell--search', {'filter': 'slug', 'value': spell.name|slug|lower}),
                 'text': spell.name ~ (spell.concentration ? '<sup>(c)</sup>' : '') ~ (spell.ritual ? '<sup>(r)</sup>' : '')
             } only %}
         </h2>

@@ -6,6 +6,7 @@ class Spell extends AbstractEntity
 {
     public function __construct(
         public int $id,
+        public string $slug,
         public string $name,
         public Publishing $publishing,
         public bool $concentration,
@@ -23,6 +24,7 @@ class Spell extends AbstractEntity
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'publishing' => $this->publishing->toArray(),
             'concentration' => $this->concentration,

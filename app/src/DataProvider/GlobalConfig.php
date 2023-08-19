@@ -4,18 +4,25 @@ namespace App\DataProvider;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class GlobalConfig implements IteratorAggregate
 {
-    private const GLOBAL_PARAMETERS_MAP = [
+    private const APP_PARAMETERS_MAP = [
         'app.display_name' => 'app_display_name',
-        'app.release_version' => 'app_version'
+        'app.release_version' => 'app_version',
+        'app.pagination.limit' => 'limit'
     ];
 
     private array $globalParameters = [];
+    private array $queryParameters = [];
 
-    public function __construct(private ParameterBagInterface $parameterBag)
+    public function __construct(
+        private ParameterBagInterface $parameterBag,
+        private RequestStack $requestStack
+    )
     {
     }
 
@@ -28,14 +35,26 @@ class GlobalConfig implements IteratorAggregate
     {
         $this->setGlobalParameters();
 
-        return $this->globalParameters;
+        return array_merge($this->globalParameters, $this->queryParameters);
     }
 
     public function setGlobalParameters(): void
     {
         if (empty($this->globalParameters)) {
-            foreach (self::GLOBAL_PARAMETERS_MAP as $parameterName => $globalParameterName) {
+            foreach (self::APP_PARAMETERS_MAP as $parameterName => $globalParameterName) {
                 $this->globalParameters[$globalParameterName] = $this->parameterBag->get($parameterName);
+            }
+        }
+
+        if (empty($this->queryParameters)) {
+            $currentRequest = $this->requestStack->getCurrentRequest();
+
+            if ($currentRequest instanceof Request) {
+                $this->queryParameters['page'] = $currentRequest->query->get('page', 1);
+
+                if ($this->queryParameters['page'] < 1) {
+                    $this->queryParameters['page'] = 1;
+                }
             }
         }
     }

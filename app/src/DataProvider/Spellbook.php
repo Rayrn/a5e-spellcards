@@ -11,6 +11,7 @@ use App\Entity\SpellList;
 use ArrayIterator;
 use IteratorAggregate;
 use League\Csv\Reader;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class Spellbook implements IteratorAggregate
 {
@@ -83,13 +84,6 @@ class Spellbook implements IteratorAggregate
     # TODO: This is a mess. Refactor.
     private function transcribe(int $id, array $record): Spell
     {
-        $publishing = new Publishing(
-            $record[self::DATA_MAP__PUBLISHING['publisher']],
-            $record[self::DATA_MAP__PUBLISHING['source']],
-            null, # TODO: Add page data
-            $record[self::DATA_MAP__PUBLISHING['source']] === "Adventurer's Guide",
-        );
-
         $adventureClass = new AdventureClass(
             $record[self::DATA_MAP__ADVENTURE_CLASS['artificer']] == "1",
             $record[self::DATA_MAP__ADVENTURE_CLASS['bard']] == "1",
@@ -104,6 +98,13 @@ class Spellbook implements IteratorAggregate
             $record[self::DATA_MAP__ADVENTURE_CLASS['wizard']] == "1"
         );
 
+        $publishing = new Publishing(
+            $record[self::DATA_MAP__PUBLISHING['publisher']],
+            $record[self::DATA_MAP__PUBLISHING['source']],
+            null, # TODO: Add page data
+            $record[self::DATA_MAP__PUBLISHING['source']] === "Adventurer's Guide",
+        );
+
         $nonTagKeyList = array_merge(
             self::DATA_MAP__ADVENTURE_CLASS,
             self::DATA_MAP__PUBLISHING,
@@ -113,8 +114,11 @@ class Spellbook implements IteratorAggregate
 
         $tags = array_filter($record, fn($value, $key) => ($value == "1" && !in_array($key, $nonTagKeyList)), ARRAY_FILTER_USE_BOTH);
 
+        $slug = (new AsciiSlugger())->slug($record[self::DATA_MAP['name']])->lower();
+
         return new Spell(
             (int) $id,
+            $slug,
             (string) $record[self::DATA_MAP['name']],
             $publishing,
             $record[self::DATA_MAP['concentration']] == "1",

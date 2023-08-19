@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class SpellList extends AbstractEntity
 {
     private array $spells = [];
@@ -9,6 +11,18 @@ class SpellList extends AbstractEntity
     public function __construct(Spell ...$spells)
     {
         $this->spells = $spells;
+    }
+
+    /** @throws NotFoundHttpException */
+    public function getPage(int $page, int $limit): SpellList
+    {
+        $spells = array_slice($this->spells, ($page - 1) * $limit, $limit);
+
+        if (empty($spells)) {
+            throw new NotFoundHttpException('No spells found!');
+        }
+
+        return new SpellList(...$spells);
     }
 
     public function getSpell(int $id): ?Spell
