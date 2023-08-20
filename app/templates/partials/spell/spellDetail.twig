@@ -2,8 +2,8 @@
     <div class="card-body">
         <h3 class="card-title">
             {% include 'partials/elements/anchor.twig' with {
-                'path': path('spell--search', {'filter': 'slug', 'value': spell.name|slug|lower}),
-                'text': spell.name ~ (spell.concentration ? '<sup>(c)</sup>' : '') ~ (spell.ritual ? '<sup>(r)</sup>' : '')
+                'path': path('spell--book') ~ '?name=' ~ spell.spellSlug,
+                'text': spell.spellName ~ (spell.concentration ? '<sup>(c)</sup>' : '') ~ (spell.ritual ? '<sup>(r)</sup>' : '')
             } only %}
         </h2>
 
@@ -11,15 +11,15 @@
 
         <p class="card-text"><em>
             {%- include 'partials/elements/anchor.twig' with {
-                'path': path('spell--search', {'filter': 'level', 'value': spell.level}),
-                'text': spell.level|format_number(style='ordinal') ~ '-level'
+                'path': path('spell--book') ~ '?level=' ~ spell.spellLevel,
+                'text': spell.spellLevel|format_number(style='ordinal') ~ '-level'
             } only -%}
 
-            ({% for tag in spell.tag -%}
+            ({% for spellTag in spell.spellTagList.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--search', {'filter': 'tag', 'value': tag}),
-                        'text': tag|title
+                        'path': path('spell--book') ~ '?tag=' ~ spellTag,
+                        'text': spellTag|title
                     } only %}
                 {% endapply %}
                 {%- if not loop.last %}, {% endif -%}
@@ -28,11 +28,10 @@
 
         <p class="card-text">
             <strong>School:</strong>
-
-            {% for school in spell.school -%}
+            {% for school in spell.spellSchool.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--search', {'filter': 'school', 'value': school}),
+                        'path': path('spell--book') ~ '?school=' ~ school,
                         'text': school|title
                     } only %}
                 {% endapply %}
@@ -42,12 +41,11 @@
 
         <p class="card-text">
             <strong>Classes:</strong>
-
-            {% for classMap in spell.classMap -%}
+            {% for adventureClass in spell.allowedClassList.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--search', {'filter': 'class', 'value': classMap}),
-                        'text': classMap|title
+                        'path': path('spell--book') ~ '?class=' ~ adventureClass,
+                        'text': adventureClass|title
                     } only %}
                 {% endapply %}
                 {%- if not loop.last %}, {% endif -%}

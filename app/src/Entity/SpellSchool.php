@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Entity\Map;
+namespace App\Entity;
 
-use App\Entity\AbstractEntity;
-
-class ClassicalSchool extends AbstractEntity
+class SpellSchool extends AbstractEntity implements Filterable
 {
+    public const RECORD_MAP = [
+        'school' => 'Classical School'
+    ];
+
     public bool $abjuration = false;
     public bool $conjuration = false;
     public bool $divination = false;
@@ -15,29 +17,28 @@ class ClassicalSchool extends AbstractEntity
     public bool $necromancy = false;
     public bool $transmutation = false;
 
-    public function __construct(string $school)
+    public function __construct(array $record)
     {
-        $school = strtolower($school);
+        $school = strtolower($record[self::RECORD_MAP['school']]);
 
         if (property_exists($this, $school)) {
             $this->$school = true;
         }
     }
 
-    public function getActive(): array
-    {
-        return array_keys(
-            array_filter($this->toArray(), fn($value) => $value === true)
-        );
-    }
-
     public function toArray(): array
     {
-        return (array) $this;
+        return array_keys(array_filter((array) $this));
     }
 
     public static function listOptions(): array
     {
         return array_keys(get_class_vars(self::class));
+    }
+
+    /** @inheritDoc */
+    public function checkCriteria(string $filter, array $values): bool
+    {
+        return count(array_intersect($values, $this->toArray())) > 0;
     }
 }

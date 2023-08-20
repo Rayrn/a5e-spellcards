@@ -3,18 +3,24 @@
 namespace App\Controller;
 
 use App\DataProvider\GlobalConfig;
-use App\DataProvider\Spellbook;
-use App\Entity\Map\AdventureClass;
-use App\Entity\Map\ClassicalSchool;
+use App\DataProvider\SpellRecords;
+use App\Entity\AllowedClassList;
+use App\Entity\Spell;
+use App\Entity\Spellbook;
+use App\Entity\SpellSchool;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SpellController extends AbstractController
 {
+    private ?Spellbook $spellbook = null;
+
     public function __construct(
         private GlobalConfig $globalConfig,
-        private Spellbook $spellbook,
+        private SpellRecords $spellRecords,
+        private RequestStack $requestStack
     )
     {
     }
@@ -23,35 +29,20 @@ class SpellController extends AbstractController
     #[cache(60)]
     public function spellBook(): Response
     {
-        $spellList = $this->spellbook->open();
-        $spellList->sort();
+        $spellbook = $this->getSpellbook();
+        foreach ($this->requestStack->getCurrentRequest()->query as $key => $value) {
+            if ($key === 'page') {
+                continue;
+            }
+
+            $spellbook = $spellbook->getSpellsBy($key, explode(',', $value));
+        }
 
         return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
-                'title' => 'Spells by Class',
-                'spells' => $spellList,
-            ]
-        ));
-    }
-
-    #[Route('/spellbook/{filter}', name: 'spell--filter', requirements: ['filter' => 'class|level|school'])]
-    #[cache(60)]
-    public function spellFilter(string $filter): Response
-    {
-        $listOptions = match ($filter) {
-            'class' => AdventureClass::listOptions(),
-            'level' => range(0, 10),
-            'school' => ClassicalSchool::listOptions(),
-        };
-
-        return $this->render('partials/filterList.twig', array_merge(
-            $this->globalConfig->getGlobalParameters(),
-            [
-                'title' => 'Spells by ' . ucfirst($filter),
-                'optionKey' => $filter,
-                'optionList' => $listOptions,
-                'optionType' => $filter == 'level' ? 'numeric' : 'text',
+                'title' => 'Spellbook',
+                'spellbook' => $spellbook
             ]
         ));
     }
@@ -60,31 +51,28 @@ class SpellController extends AbstractController
     #[cache(1)]
     public function spellRandom(): Response
     {
-        $spellList = $this->spellbook->open()->shuffleSpells(6);
-        $spellList->sort();
-
         return $this->render('partials/spellList.twig', array_merge(
             $this->globalConfig->getGlobalParameters(),
             [
                 'title' => 'Pew Pew Pew!',
-                'spells' => $spellList,
+                'spellbook' => $this->getSpellbook()->getRandomSpells(6),
             ]
         ));
     }
 
-    #[Route('/spellbook/{filter}/{value}', name: 'spell--search')]
-    #[cache(60)]
-    public function spellSearch(string $filter, mixed $value): Response
+    private function getSpellbook(): Spellbook
     {
-        $spellList = $this->spellbook->open()->filter($filter, $value);
-        $spellList->sort();
+        if ($this->spellbook === null) {
 
-        return $this->render('partials/spellList.twig', array_merge(
-            $this->globalConfig->getGlobalParameters(),
-            [
-                'title' => 'Spells by Class',
-                'spells' => $spellList,
-            ]
-        ));
+            $spells = [];
+            foreach ($this->spellRecords as $id => $spellRecord) {
+                $spellRecord['id'] = $id;
+                $spells[] = new Spell($spellRecord);
+            }
+
+            $this->spellbook = new Spellbook(...$spells);
+        }
+
+        return $this->spellbook;
     }
 }

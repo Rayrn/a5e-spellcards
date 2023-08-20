@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="row justify-content-center">
-        {% for spell in spells.getPage(page|default(1), limit) %}
+        {% for spell in spellbook.getSpellbookPage(page|default(1), limit).getSpells %}
             {% include 'partials/spell/spellDetail.twig' %}
         {% endfor %}
     </div>
@@ -10,6 +10,6 @@
     {% include 'partials/nav/nav-pagination.twig' with {
         'page': page|default(1),
         'limit': limit,
-        'total': spells.listSpells|length,
+        'total': spellbook.getSpells|length,
     } only %}
 {% endblock %}

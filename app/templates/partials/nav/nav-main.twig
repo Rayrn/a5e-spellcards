@@ -1,12 +1,7 @@
 {% set headerItems = [
     { name: 'Home', url: path('home') },
     { name: 'Cast Random Spells', url: path('spell--random') },
-    { name: 'Open Spellbook', url: path('spell--book') },
-    { name: 'Lookup Spells by', url: '#', dropdown: [
-        { name: 'Class ', url: path('spell--filter', {filter: 'class'}) },
-        { name: 'School', url: path('spell--filter', {filter: 'school'}) },
-        { name: 'Level', url: path('spell--filter', {filter: 'level'}) }
-    ]}
+    { name: 'Open Spellbook', url: path('spell--book') }
 ] %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark position-sticky top-0 start-0 end-0 z-3">

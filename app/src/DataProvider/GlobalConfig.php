@@ -12,7 +12,7 @@ class GlobalConfig implements IteratorAggregate
 {
     private const APP_PARAMETERS_MAP = [
         'app.display_name' => 'app_display_name',
-        'app.release_version' => 'app_version',
+        'app.release_version' => 'release_version',
         'app.pagination.limit' => 'limit'
     ];
 

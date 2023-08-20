@@ -17,6 +17,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\DataProvider\Spellbook:
+    App\DataProvider\SpellRecords:
         arguments:
-            $dataPath: '../assets/data/spells.csv'
+            - '../assets/data/spells.csv'
