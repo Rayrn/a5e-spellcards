@@ -1,3 +1,8 @@
+{% set queryString = app.request.queryString %}
+
+# Strip out the page (and page number) query string parameters
+{% set queryString = queryString|replace({('page=' ~ page): ''}) %}
+
 {% set current = page %}
 {% set first = 1 %}
 {% set last = (total / limit)|round(0, 'ceil' ) %}
@@ -13,37 +18,37 @@
     <nav>
         <ul class="pagination pagination-lg justify-content-center">
             {% if current > 2 %}
-                <li class="page-item"><a class="page-link" href="?page={{ first }}">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ first  ~ '&' ~ queryString }}">&laquo;</a></li>
             {% endif %}
 
             {% if current > 3 and next > last %}
-                <li class="page-item"><a class="page-link" href="?page={{ previousThree }}">{{ previousThree }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ previousThree ~ '&' ~ queryString }}">{{ previousThree }}</a></li>
             {% endif %}
 
             {% if current > 2 and nextTwo > last %}
-                <li class="page-item"><a class="page-link" href="?page={{ previousTwo }}">{{ previousTwo }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ previousTwo ~ '&' ~ queryString }}">{{ previousTwo }}</a></li>
             {% endif %}
 
             {% if current > 1 %}
-                <li class="page-item"><a class="page-link" href="?page={{ previous }}">{{ previous }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ previous ~ '&' ~ queryString }}">{{ previous }}</a></li>
             {% endif %}
 
             <li class="page-item"><a class="page-link active">{{ current }}</a></li>
 
             {% if next <= last %}
-                <li class="page-item"><a class="page-link" href="?page={{ next }}">{{ next }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ next ~ '&' ~ queryString }}">{{ next }}</a></li>
             {% endif %}
 
             {% if nextTwo <= last and previousTwo < 1 %}
-                <li class="page-item"><a class="page-link" href="?page={{ nextTwo }}">{{ nextTwo }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ nextTwo ~ '&' ~ queryString }}">{{ nextTwo }}</a></li>
             {% endif %}
 
             {% if nextThree < last and previous < 1 %}
-                <li class="page-item"><a class="page-link" href="?page={{ nextThree }}">{{ nextThree }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ nextThree ~ '&' ~ queryString }}">{{ nextThree }}</a></li>
             {% endif %}
 
             {% if current < last - 1 %}
-                <li class="page-item"><a class="page-link" href="?page={{ last }}">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ last  ~ '&' ~ queryString }}">&raquo;</a></li>
             {% endif %}
         </ul>
     </nav>
