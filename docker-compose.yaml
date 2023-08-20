@@ -6,7 +6,6 @@ services:
         build:
             args:
                 COMPOSER_AUTH: "${COMPOSER_AUTH}"
-                DD_SERVICE:
                 APP_VERSION:
                 BUILD_START_TIME:
                 LAST_COMMIT_DATE:
@@ -15,9 +14,6 @@ services:
             target: app_dev
         environment:
             APP_ENV: dev
-        depends_on:
-            - db
-            - redis
         env_file:
             - ${ENV_FILE:-.env}
         volumes:
@@ -46,18 +42,3 @@ services:
             - web
         links:
             - web
-    db:
-        image: mongo:4.4
-        environment:
-            MONGO_INITDB_DATABASE: api
-            MONGO_INITDB_ROOT_USERNAME: api
-            MONGO_INITDB_ROOT_PASSWORD: password
-        volumes:
-            - db_data:/var/lib/mongodb/data:rw
-    redis:
-        image: redis:5.0-alpine
-        volumes:
-            - redis_data:/data/redis:rw
-volumes:
-    db_data: {}
-    redis_data: {}

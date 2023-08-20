@@ -6,16 +6,12 @@ services:
         build:
             args:
                 COMPOSER_AUTH: "${COMPOSER_AUTH}"
-                DD_SERVICE:
                 APP_VERSION:
                 BUILD_START_TIME:
                 LAST_COMMIT_DATE:
             context: .
             dockerfile: ./docker/Dockerfile
             target: app
-        depends_on:
-            - db
-            - redis
         env_file:
             - ${ENV_FILE:-.env}
     web:
@@ -38,18 +34,3 @@ services:
             - ${APP_CACHE_PORT}:80
         depends_on:
             - web
-    db:
-        image: mongo:4.4
-        environment:
-            MONGO_INITDB_DATABASE: api
-            MONGO_INITDB_ROOT_USERNAME: api
-            MONGO_INITDB_ROOT_PASSWORD: password
-        volumes:
-            - db_data:/var/lib/mongodb/data:rw
-    redis:
-        image: redis:5.0-alpine
-        volumes:
-            - redis_data:/data/redis:rw
-volumes:
-    db_data: {}
-    redis_data: {}

@@ -1,4 +1,4 @@
-FROM ghcr.io/immediatemediaco/php:8.2-fpm-mongodb AS app
+FROM ghcr.io/immediatemediaco/php:8.2-fpm AS app
 
 ARG COMPOSER_AUTH="{}"
 

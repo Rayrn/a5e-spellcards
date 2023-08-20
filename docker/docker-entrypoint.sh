@@ -12,8 +12,6 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
     composer install --prefer-dist --no-progress -o --no-interaction
     chmod -R 777 var
   fi
-
-  ./bin/console doctrine:mongodb:schema:update || echo "Warning: failed to update DB indexes"
 fi
 
 exec docker-php-entrypoint "$@"
