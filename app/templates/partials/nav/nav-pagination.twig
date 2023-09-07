@@ -1,6 +1,6 @@
-{% set queryString = app.request.queryString %}
+{% set queryString = query|url_encode|replace({'%5B': '[', '%5D': ']', '%2C': ','}) %}
 
-# Strip out the page (and page number) query string parameters
+{# Strip out the page (and page number) query string parameters #}
 {% set queryString = queryString|replace({('page=' ~ page): ''}) %}
 
 {% set current = page %}

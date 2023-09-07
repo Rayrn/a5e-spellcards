@@ -1,24 +1,40 @@
 <div class="col-md-3 card text-center shadow m-4">
     <div class="card-body">
         <h3 class="card-title">
-            {% include 'partials/elements/anchor.twig' with {
-                'path': path('spell--book') ~ '?name=' ~ spell.spellSlug,
-                'text': spell.spellName ~ (spell.concentration ? '<sup>(c)</sup>' : '') ~ (spell.ritual ? '<sup>(r)</sup>' : '')
-            } only %}
+            {% apply spaceless %}
+                {% include 'partials/elements/anchor.twig' with {
+                    'path': path('spell--book') ~ '?name=' ~ spell.spellSlug,
+                    'text': spell.spellName
+                } only %}
+
+                {% if spell.concentration %}
+                    {% include 'partials/elements/anchor.twig' with {
+                        'path': path('spell--book') ~ '?concentration=true',
+                        'text': '<sup>(c)</sup>'
+                    } only %}
+                {% endif %}
+
+                {% if spell.ritual %}
+                    {% include 'partials/elements/anchor.twig' with {
+                        'path': path('spell--book') ~ '?ritual=true',
+                        'text': '<sup>(r)</sup>'
+                    } only %}
+                {% endif %}
+            {% endapply %}
         </h2>
 
         <hr>
 
         <p class="card-text"><em>
             {%- include 'partials/elements/anchor.twig' with {
-                'path': path('spell--book') ~ '?level=' ~ spell.spellLevel,
+                'path': path('spell--book') ~ '?level[]=' ~ spell.spellLevel,
                 'text': spell.spellLevel|format_number(style='ordinal') ~ '-level'
             } only -%}
 
             ({% for spellTag in spell.spellTagList.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--book') ~ '?tag=' ~ spellTag,
+                        'path': path('spell--book') ~ '?tag[]=' ~ spellTag,
                         'text': spellTag|title
                     } only %}
                 {% endapply %}
@@ -31,7 +47,7 @@
             {% for school in spell.spellSchool.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--book') ~ '?school=' ~ school,
+                        'path': path('spell--book') ~ '?school[]=' ~ school,
                         'text': school|title
                     } only %}
                 {% endapply %}
@@ -44,7 +60,7 @@
             {% for adventureClass in spell.allowedClassList.toArray -%}
                 {% apply spaceless %}
                     {% include 'partials/elements/anchor.twig' with {
-                        'path': path('spell--book') ~ '?class=' ~ adventureClass,
+                        'path': path('spell--book') ~ '?class[]=' ~ adventureClass,
                         'text': adventureClass|title
                     } only %}
                 {% endapply %}

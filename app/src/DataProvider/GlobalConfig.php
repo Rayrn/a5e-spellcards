@@ -16,9 +16,6 @@ class GlobalConfig implements IteratorAggregate
         'app.pagination.limit' => 'limit'
     ];
 
-    private array $globalParameters = [];
-    private array $queryParameters = [];
-
     public function __construct(
         private ParameterBagInterface $parameterBag,
         private RequestStack $requestStack
@@ -33,29 +30,37 @@ class GlobalConfig implements IteratorAggregate
 
     public function getGlobalParameters(): array
     {
-        $this->setGlobalParameters();
-
-        return array_merge($this->globalParameters, $this->queryParameters);
+        return array_merge(
+            $this->loadGlobalParameters(),
+            $this->loadQueryParameters()
+        );
     }
 
-    public function setGlobalParameters(): void
+    private function loadGlobalParameters(): array
     {
-        if (empty($this->globalParameters)) {
-            foreach (self::APP_PARAMETERS_MAP as $parameterName => $globalParameterName) {
-                $this->globalParameters[$globalParameterName] = $this->parameterBag->get($parameterName);
-            }
+        $globalParameters = [];
+        foreach (self::APP_PARAMETERS_MAP as $parameterName => $globalParameterName) {
+            $globalParameters[$globalParameterName] = $this->parameterBag->get($parameterName);
         }
 
-        if (empty($this->queryParameters)) {
-            $currentRequest = $this->requestStack->getCurrentRequest();
+        return $globalParameters;
+    }
 
-            if ($currentRequest instanceof Request) {
-                $this->queryParameters['page'] = $currentRequest->query->get('page', 1);
+    private function loadQueryParameters(): array
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
 
-                if ($this->queryParameters['page'] < 1) {
-                    $this->queryParameters['page'] = 1;
-                }
-            }
+        if (!($currentRequest instanceof Request)) {
+            return [];
         }
+
+        $queryParameters['query'] = $currentRequest->query->all();
+        ksort($queryParameters['query']);
+        unset($queryParameters['query']['page']);
+
+        $currentPage = $currentRequest->query->getInt('page', 1);
+        $queryParameters['page'] = $currentPage < 1 ? 1 : $currentPage;
+
+        return $queryParameters;
     }
 }

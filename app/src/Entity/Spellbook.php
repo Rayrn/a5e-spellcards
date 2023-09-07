@@ -25,6 +25,16 @@ class Spellbook extends AbstractEntity
         return $this->spells;
     }
 
+    public function getFilterOptions(string $attribute): array
+    {
+        $options = [];
+        foreach ($this->spells as $spell) {
+            $options[] = $spell->$attribute;
+        }
+
+        return array_unique($options);
+    }
+
     public function getSpellsBy(string $filter, array $values): Spellbook
     {
         $spells = array_filter($this->spells, fn (Spell $spell) => $spell->checkCriteria($filter, $values));

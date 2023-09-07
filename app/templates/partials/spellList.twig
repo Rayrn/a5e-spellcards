@@ -1,14 +1,24 @@
 {% extends "base.twig" %}
 
 {% block body %}
+    {% include 'partials/search/search-filter-list.twig' with {
+        'spellbook': spellbook,
+        'query': query,
+    } only %}
+
+    {% include 'partials/search/search-pill-list.twig' with {
+        'query': query
+    } only %}
+
     <div class="row justify-content-center">
-        {% for spell in spellbook.getSpellbookPage(page|default(1), limit).getSpells %}
+        {% for spell in spellbook.getSpellbookPage(page, limit).getSpells %}
             {% include 'partials/spell/spellDetail.twig' %}
         {% endfor %}
     </div>
 
     {% include 'partials/nav/nav-pagination.twig' with {
-        'page': page|default(1),
+        'query': query,
+        'page': page,
         'limit': limit,
         'total': spellbook.getSpells|length,
     } only %}

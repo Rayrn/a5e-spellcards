@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-12 col-md-12">
+        {% for key, value in query %}
+            {% if value is not iterable %}
+                {% set targetPath = query|filter((v, k) => k != key) %}
+
+                {% include 'partials/search/search-pill.twig' with {
+                    'class': 'primary',
+                    'label': key|title ~ ': ' ~ value|title|replace({',' : ' OR '}),
+                    'path': path('spell--book') ~ '?' ~ targetPath|url_encode|replace({'%5B': '[', '%5D': ']', '%2C': ','}),
+                } only %}
+            {% else %}
+                {% for item in value %}
+                    {% set targetPath = query|merge({
+                        (key): query[key]|filter((v) => v != item)
+                    }) %}
+
+                    {% include 'partials/search/search-pill.twig' with {
+                        'class': 'primary',
+                        'label': key|title ~ ': ' ~ item|title|replace({',' : ' OR '}),
+                        'path': path('spell--book') ~ '?' ~ targetPath|url_encode|replace({'%5B': '[', '%5D': ']', '%2C': ','}),
+                    } only %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

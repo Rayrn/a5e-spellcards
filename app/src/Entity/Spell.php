@@ -84,6 +84,11 @@ class Spell extends AbstractEntity implements Filterable
             throw new InvalidArgumentException ('Invalid search criteria');
         }
 
+        foreach ($values as $key => $value) {
+            $values[$key] = $value === 'true' ? true : $value;
+            $values[$key] = $value === 'false' ? false : $value;
+        }
+
         $attribute = $this->{self::FILTER_MAP[$filter]};
 
         if ($attribute instanceof Filterable) {

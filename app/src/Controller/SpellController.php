@@ -35,7 +35,9 @@ class SpellController extends AbstractController
                 continue;
             }
 
-            $spellbook = $spellbook->getSpellsBy($key, explode(',', $value));
+            foreach ((array) $value as $filterSet) {
+                $spellbook = $spellbook->getSpellsBy($key, explode(',', $filterSet));
+            }
         }
 
         return $this->render('partials/spellList.twig', array_merge(

@@ -1,0 +1,8 @@
+<span class="badge bg-{{ class|default('info') }} fs-5 m-1">
+    {{ label|raw }}
+    {% include 'partials/elements/anchor.twig'  with {
+        'additionalClasses': 'material-symbols-outlined link-light fs-6',
+        'path': path,
+        'text': 'cancel'
+    } only %}
+</span>

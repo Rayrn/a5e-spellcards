@@ -1,0 +1,15 @@
+{# <div class="row">
+    <div class="col-12 col-md-12">
+        <form>
+            <div class="input-group mb-3">
+                <select class="form-select" placeholder="Class...">
+                    {% for classOption in constant('App\\Entity\\AllowedClassList::RECORD_MAP') %}
+                        <option value="{{ classOption }}">{{ classOption|title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div> #}

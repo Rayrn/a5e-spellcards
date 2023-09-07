@@ -31,11 +31,6 @@ class SpellSchool extends AbstractEntity implements Filterable
         return array_keys(array_filter((array) $this));
     }
 
-    public static function listOptions(): array
-    {
-        return array_keys(get_class_vars(self::class));
-    }
-
     /** @inheritDoc */
     public function checkCriteria(string $filter, array $values): bool
     {
